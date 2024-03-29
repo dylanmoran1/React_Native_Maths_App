@@ -23,6 +23,22 @@ class Game extends React.Component {
   target = this.randomNumbers.slice(0, this.props.numberCount - 2).reduce((acc, curr) => acc + curr, 0)
   // TODO:Make Chosen Numbers Position Random
 
+  componentDidMount () {
+    this.intervalId = setInterval(() => {
+      this.setState((prevState) => {
+        return { remainingSeconds: prevState.remainingSeconds - 1 }
+      }, () => {
+        if (this.state.remainingSeconds === 0) {
+          clearInterval(this.intervalId)
+        }
+      })
+    }, 1000)
+  }
+
+  componentWillUnmount () {
+    clearInterval(this.intervalId)
+  }
+
   isNumberSelected = (numberIndex) => {
     return this.state.selectedIds.indexOf(numberIndex) >= 0
   }
@@ -36,6 +52,9 @@ class Game extends React.Component {
     const sumSelected = this.state.selectedIds.reduce((acc, curr) => {
       return acc + this.randomNumbers[curr];
     }, 0)
+    if (this.state.remainingSeconds === 0) {
+      return 'LOST'
+    }
     if (sumSelected < this.target) {
       return 'PLAYING'
     }
@@ -59,7 +78,7 @@ class Game extends React.Component {
                     onPress = {this.selectNumber}/>
                   )}
                 </View>
-                <Text>{gameStatus}</Text>
+                <Text>{this.state.remainingSeconds}</Text>
                 <StatusBar style="auto" />
             </View>
     )

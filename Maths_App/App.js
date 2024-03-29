@@ -5,7 +5,7 @@ class App extends React.Component {
   render () {
     return (
 
-      <Game numberCount={6}/>
+      <Game numberCount={6} initialSeconds = {10}/>
     )
   }
 }
