@@ -8,11 +8,13 @@ import RandomNumber from './RandomNumber'
 
 class Game extends React.Component {
   static propTypes = {
-    numberCount: PropTypes.number.isRequired
+    numberCount: PropTypes.number.isRequired,
+    initialSeconds: PropTypes.number.isRequired
   }
 
   state = {
-    selectedNumbers: []
+    selectedIds: [],
+    remainingSeconds: this.props.initialSeconds
   }
 
   randomNumbers = Array.from({ length: this.props.numberCount })
@@ -20,15 +22,44 @@ class Game extends React.Component {
 
   target = this.randomNumbers.slice(0, this.props.numberCount - 2).reduce((acc, curr) => acc + curr, 0)
   // TODO:Make Chosen Numbers Position Random
+
+  isNumberSelected = (numberIndex) => {
+    return this.state.selectedIds.indexOf(numberIndex) >= 0
+  }
+
+  selectNumber = (numberIndex) => {
+    this.setState((prevState) => ({ selectedIds: [...prevState.selectedIds, numberIndex] })
+    )
+  }
+
+  gameStatus = () => {
+    const sumSelected = this.state.selectedIds.reduce((acc, curr) => {
+      return acc + this.randomNumbers[curr];
+    }, 0)
+    if (sumSelected < this.target) {
+      return 'PLAYING'
+    }
+
+    if (sumSelected === this.target) {
+      return 'WON'
+    }
+
+    return 'LOST'
+  }
+
   render () {
+    const gameStatus = this.gameStatus();
     return (
             <View style = {styles.container}>
-                <Text style = {styles.target}>{this.target}</Text>
+                <Text style = {[styles.target, styles[`STATUS_${gameStatus}`]]}>{this.target}</Text>
                 <View style = {styles.randomNumsContainer}>
                   {this.randomNumbers.map((randomNumber, index) =>
-                    <RandomNumber key = {index} number = {randomNumber}/>
+                    <RandomNumber key = {index} id = {index} number = {randomNumber}
+                    isSelected = {this.isNumberSelected(index) || gameStatus !== 'PLAYING'}
+                    onPress = {this.selectNumber}/>
                   )}
                 </View>
+                <Text>{gameStatus}</Text>
                 <StatusBar style="auto" />
             </View>
     )
@@ -54,6 +85,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around'
+  },
+
+  STATUS_PLAYING: {
+    backgroundColor: 'black'
+  },
+
+  STATUS_WON: {
+    backgroundColor: 'green'
+  },
+
+  STATUS_LOST: {
+    backgroundColor: 'red'
   }
 })
 
