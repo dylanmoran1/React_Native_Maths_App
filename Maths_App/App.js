@@ -1,13 +1,13 @@
-import React from 'react';
-import Game from './src/components/Game';
+import React from 'react'
+import Game from './src/components/Game'
 
 class App extends React.Component {
-  render() {
+  render () {
     return (
-      
+
       <Game numberCount={6}/>
-    );
+    )
   }
 }
 
-export default App;
+export default App

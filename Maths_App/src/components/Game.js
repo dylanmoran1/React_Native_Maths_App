@@ -4,9 +4,15 @@ import React from 'react'
 import { PropTypes } from 'prop-types'
 import { StatusBar, StyleSheet, Text, View } from 'react-native'
 
+import RandomNumber from './RandomNumber'
+
 class Game extends React.Component {
   static propTypes = {
     numberCount: PropTypes.number.isRequired
+  }
+
+  state = {
+    selectedNumbers: []
   }
 
   randomNumbers = Array.from({ length: this.props.numberCount })
@@ -19,8 +25,8 @@ class Game extends React.Component {
             <View style = {styles.container}>
                 <Text style = {styles.target}>{this.target}</Text>
                 <View style = {styles.randomNumsContainer}>
-                  {this.randomNumbers.map((randomNumber, i) =>
-                    <Text key = {i} style = {styles.randomNums}>{randomNumber}</Text>
+                  {this.randomNumbers.map((randomNumber, index) =>
+                    <RandomNumber key = {index} number = {randomNumber}/>
                   )}
                 </View>
                 <StatusBar style="auto" />
@@ -48,16 +54,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around'
-  },
-
-  randomNums: {
-    fontSize: 40,
-    color: 'red',
-    width: 100,
-    backgroundColor: 'black',
-    marginHorizontal: 15,
-    marginVertical: 25,
-    textAlign: 'center'
   }
 })
 
